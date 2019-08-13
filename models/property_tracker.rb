@@ -44,4 +44,26 @@ attr_reader :id
     return properties.map { |property| Property.new(property)}
   end
 
+  def update
+    db = PG.connect({dbname: 'property_tracker', host: 'localhost'})
+    sql = "
+      UPDATE properties
+      SET (
+        address,
+        value,
+        number_of_bedrooms,
+        year_built
+        ) =
+        ( $1, $2, $3, $4
+          )
+        WHERE id = $5
+        "
+        values = [@address, @value, @number_of_bedrooms, @year_built, @id]
+        db.prepare("update", sql)
+        db.exec_prepared("update", values)
+        db.close()
+  end
+
+
+
 end

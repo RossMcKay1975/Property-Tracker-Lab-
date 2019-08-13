@@ -19,6 +19,9 @@ property2 = Property.new({
 property1.save()
 property2.save()
 
+property1.value = "365555"
+property1.update()
+
 Property.all()
 
 binding.pry
