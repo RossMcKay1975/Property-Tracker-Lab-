@@ -1,6 +1,7 @@
 require('pry-byebug')
 require_relative('./models/property_tracker')
 
+Property.delete_all
 
 property1 = Property.new({
   'address' => '23 Ryehill Ave',
@@ -21,6 +22,8 @@ property2.save()
 
 property1.value = "365555"
 property1.update()
+
+property2.delete
 
 Property.all()
 
