@@ -15,8 +15,33 @@ attr_reader :id
     @id = options['id'].to_i if options['id']
   end
 
-
-
-
-
+  def save
+    db = PG.connect({dbname: 'property_tracker', host: 'localhost'})
+    sql = "
+        INSERT INTO properties
+        (
+        address,
+        value,
+        number_of_bedrooms,
+        year_built
+        )
+        VALUES
+        ($1, $2, $3, $4)
+        RETURNING *
+        "
+      values = [@address, @value, @number_of_bedrooms, @year_built]
+      db.prepare("save", sql)
+      @id = db.exec_prepared("save", values)[0]["id"].to_i
+      db.close
   end
+
+  def Property.all
+    db = PG.connect({dbname: 'property_tracker', host: 'localhost'})
+    sql = "SELECT * FROM properties"
+    db.prepare("all", sql)
+    properties = db.exec_prepared("all")
+    db.close()
+    return properties.map { |property| Property.new(property)}
+  end
+
+end
